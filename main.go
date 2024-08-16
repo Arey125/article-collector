@@ -2,67 +2,57 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-	"strings"
-
-	md "github.com/JohannesKaufmann/html-to-markdown"
-	"github.com/PuerkitoBio/goquery"
+	fzf "github.com/ktr0731/go-fuzzyfinder"
+	"os"
 )
 
-type Article struct {
-    name string
-    link string
+var flyIo = Source{
+	url:                 "https://fly.io",
+	domain:              "fly.io",
+	articleListUrl:      "/blog",
+	articleListSelector: "article",
+	nameSelector:        "h1",
+	linkSelector:        "a",
+	articleMdSelector:   "article",
 }
 
-func getArticleMd(url string, selector string) (string, error) {
-    fmt.Println(url)
-    res, err := http.Get(url)
-    if err != nil {
-        return "", err
-    }
-
-    doc, err := goquery.NewDocumentFromResponse(res)
-    if err != nil {
-        return "", err
-    }
-
-    articleElement := doc.Find(selector)
-    converter := md.NewConverter("", true, nil)
-
-    return converter.Convert(articleElement), nil
-}
-
-func getArticleList (url string, articleSelector string, nameSelector string, linkSelector string) ([]Article, error) {
-    res, err := http.Get(url)
-    if err != nil {
-        return nil, err
-    }
-
-    doc, err := goquery.NewDocumentFromResponse(res)
-    if err != nil {
-        return nil, err
-    }
-
-    articleSelect := doc.Find(articleSelector)
-    articles := make([]Article, len(articleSelect.Nodes), len(articleSelect.Nodes))
-    for i := range articleSelect.Nodes {
-        articleNode := articleSelect.Eq(i)
-        articles[i] = Article{
-            name: strings.TrimSpace(articleNode.Find(nameSelector).Text()),
-            link: articleNode.Find(linkSelector).AttrOr("href", ""),
-        }
-    }
-
-    return articles, nil
+var goByExample = Source{
+	url:                 "https://gobyexample.com/",
+	domain:              "gobyexample.com",
+	articleListUrl:      "",
+	articleListSelector: "li",
+	nameSelector:        "a",
+	linkSelector:        "a",
+	articleMdSelector:   "body",
 }
 
 func main() {
-    url := "https://fly.io"
+	articles, err := goByExample.getArticleList()
+	if err != nil {
+		panic(err)
+	}
 
-    articles, err := getArticleList(url + "/blog", "article", "h1", "a")
-    if (err != nil) {
-        panic(err)
-    }
+	selectedInd, err := fzf.Find(articles, func(i int) string {
+		return articles[i].name
+	})
+	if err != nil {
+		panic(err)
+	}
+	selectedArticle := articles[selectedInd]
+	articleMd, err := selectedArticle.getMd()
+	if err != nil {
+		panic(err)
+	}
 
-    fmt.Println(getArticleMd(url + articles[0].link, "article > section"))
+	args := os.Args[1:]
+	if len(args) < 1 {
+		fmt.Println(articleMd)
+		return
+	}
+	outputFile, err := os.Create(args[0])
+	if err != nil {
+		panic(err)
+	}
+
+	outputFile.Write([]byte(articleMd))
 }
