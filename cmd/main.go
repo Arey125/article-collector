@@ -1,10 +1,8 @@
 package main
 
 import (
-	"fmt"
-	fzf "github.com/ktr0731/go-fuzzyfinder"
-	"os"
-    "github.com/Arey125/article-collector/internal/article"
+	"github.com/Arey125/article-collector/internal/article"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 var flyIo = article.Source{
@@ -27,33 +25,10 @@ var goByExample = article.Source{
 	ArticleMdSelector:   "body",
 }
 
+var sources = []article.Source{goByExample, flyIo}
+
 func main() {
-	articles, err := goByExample.GetArticleList()
-	if err != nil {
-		panic(err)
+	for _, source := range sources {
+		article.SaveAllArticlesFromSource(source)
 	}
-
-	selectedInd, err := fzf.Find(articles, func(i int) string {
-		return articles[i].Name
-	})
-	if err != nil {
-		panic(err)
-	}
-	selectedArticle := articles[selectedInd]
-	articleMd, err := selectedArticle.GetMd()
-	if err != nil {
-		panic(err)
-	}
-
-	args := os.Args[1:]
-	if len(args) < 1 {
-		fmt.Println(articleMd)
-		return
-	}
-	outputFile, err := os.Create(args[0])
-	if err != nil {
-		panic(err)
-	}
-
-	outputFile.Write([]byte(articleMd))
 }
