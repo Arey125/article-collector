@@ -3,3 +3,6 @@ all:
 
 run: all
 	@./bin/article-collector
+
+save: all
+	@./bin/article-collector save
