@@ -2,37 +2,21 @@ package server
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 	"path"
-	"text/template"
 
 	"github.com/Arey125/article-collector/internal/article"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 )
 
-const homeTemplateString = `
-<html>
-    <head>
-        <title>Home</title>
-    </head>
-    <body>
-        <h1>Home</h1>
-        <ul>
-            {{ range . }}
-            <li><a href="/blog/{{ . }}">{{ . }}</a></li>
-            {{ end }}
-        </ul>
-    </body>
-</html>
-`
-
 var mdRenderer = goldmark.New(
 	goldmark.WithExtensions(
 		highlighting.NewHighlighting(
 			highlighting.WithStyle("catppuccin"),
-            highlighting.WithGuessLanguage(true),
+			highlighting.WithGuessLanguage(true),
 		),
 	),
 )
@@ -51,18 +35,19 @@ func (server *Server) Home(w http.ResponseWriter, req *http.Request) {
 		articles, _ := source.GetArticleList()
 		allArticles = append(allArticles, articles...)
 	}
+	type ArticleLink struct {
+		Title string
+		Link  string
+	}
 
-	articleStrings := make([]string, len(allArticles))
+	articleLinks := make([]ArticleLink, len(allArticles))
 	for i, article := range allArticles {
-		articleStrings[i] = fmt.Sprintf("%s/%s", article.Source.Domain, path.Base(article.Link))
+		articleLinks[i].Title = fmt.Sprintf("%s from %s", article.Name, article.Source.Domain)
+		articleLinks[i].Link = fmt.Sprintf("/blog/%s/%s", article.Source.Domain, path.Base(article.Link))
 	}
 
-	templ, err := template.New("home").Parse(homeTemplateString)
-	if err != nil {
-		panic(err)
-	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	templ.Execute(w, articleStrings)
+	templ := template.Must(template.ParseFiles("internal/server/home.html"))
+	templ.Execute(w, articleLinks)
 }
 
 func (server *Server) Blog(w http.ResponseWriter, req *http.Request) {
