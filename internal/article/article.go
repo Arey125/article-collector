@@ -1,8 +1,8 @@
 package article
 
 import (
+	"bytes"
 	"fmt"
-	"net/http"
 	"os"
 	"path"
 	"time"
@@ -17,25 +17,8 @@ type Article struct {
 	Source *Source
 }
 
-func (article Article) GetMd() (string, error) {
-	res, err := http.Get(article.Source.Url + article.Link)
-	if err != nil {
-		return "", err
-	}
-
-	doc, err := goquery.NewDocumentFromReader(res.Body)
-	if err != nil {
-		return "", err
-	}
-
-	articleElement := doc.Find(article.Source.ArticleMdSelector)
-	converter := md.NewConverter(article.Source.Domain, true, nil)
-
-	return converter.Convert(articleElement), nil
-}
-
 func (article Article) GetSlug() string {
-    return path.Base(article.Link)
+	return path.Base(article.Link)
 }
 
 func (article Article) getFileName() string {
@@ -46,7 +29,25 @@ func (article Article) GetFilePath() string {
 	return path.Join(article.Source.GetDirectoryPath(), article.getFileName())
 }
 
-func (article Article) SaveToFileIfDoesNotExist() (saved bool, error error) {
+func (article Article) GetMd() (string, error) {
+	html, err := article.GetHtml()
+	if err != nil {
+		return "", err
+	}
+    htmlBuffer := bytes.NewReader(html)
+
+	doc, err := goquery.NewDocumentFromReader(htmlBuffer)
+	if err != nil {
+		return "", err
+	}
+
+	articleElement := doc.Find(article.Source.ArticleMdSelector)
+	converter := md.NewConverter(article.Source.Domain, true, nil)
+
+	return converter.Convert(articleElement), nil
+}
+
+func (article Article) SaveToFileIfDoesNotExist() (isFromNetwork bool, error error) {
 	directory := article.Source.GetDirectoryPath()
 	path := article.GetFilePath()
 
@@ -55,18 +56,21 @@ func (article Article) SaveToFileIfDoesNotExist() (saved bool, error error) {
 		panic(err)
 	}
 
-    _, err = os.Stat(path) 
+	_, err = os.Stat(path)
 	if !os.IsNotExist(err) {
 		return false, err
 	}
-    if err == nil {
-        return false, nil
-    }
+	if err == nil {
+		return false, nil
+	}
 
 	outputFile, err := os.Create(path)
 	if err != nil {
 		panic(err)
 	}
+
+    htmlPath := article.getHtmlPath()
+    _, htmlFileErr := os.Stat(htmlPath)
 
 	md, err := article.GetMd()
 	if err != nil {
@@ -74,25 +78,25 @@ func (article Article) SaveToFileIfDoesNotExist() (saved bool, error error) {
 	}
 
 	outputFile.Write([]byte(md))
-	return true, nil
+	return htmlFileErr != nil, nil
 }
 
 func SaveAllArticlesFromSource(source Source) error {
 	articles, err := source.GetArticleList()
 	if err != nil {
-        return err
+		return err
 	}
 
 	for _, article := range articles {
 		saved, err := article.SaveToFileIfDoesNotExist()
-        if err != nil {
-            panic(err)
-        }
+		if err != nil {
+			panic(err)
+		}
 		if saved {
-            fmt.Printf("\"%s\" from %s is saved\n", article.Name, article.Source.Domain)
+			fmt.Printf("\"%s\" from %s is saved\n", article.Name, article.Source.Domain)
 			time.Sleep(400 * time.Millisecond)
 		}
 	}
 
-    return nil
+	return nil
 }

@@ -48,7 +48,7 @@ func (source Source) GetArticleList() ([]Article, error) {
 }
 
 func (source Source) GetDirectoryPath() string {
-	return path.Join(os.Getenv("FILES"), source.Domain)
+	return path.Join(os.Getenv("FILES"), "md" ,source.Domain)
 }
 
 var flyIo = Source{
