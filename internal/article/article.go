@@ -34,13 +34,23 @@ func (article Article) GetMd() (string, error) {
 	return converter.Convert(articleElement), nil
 }
 
+func (article Article) GetSlug() string {
+    return path.Base(article.Link)
+}
+
+func (article Article) getFileName() string {
+	return article.GetSlug() + ".md"
+}
+
+func (article Article) GetFilePath() string {
+	return path.Join(article.Source.GetDirectoryPath(), article.getFileName())
+}
+
 func (article Article) SaveToFileIfDoesNotExist() (saved bool, error error) {
-	fileName := path.Base(article.Link) + ".md"
+	directory := article.Source.GetDirectoryPath()
+	path := article.GetFilePath()
 
-	folder := path.Join(os.Getenv("FILES"), article.Source.Domain)
-	path := path.Join(folder, fileName)
-
-	err := os.MkdirAll(folder, 0o775)
+	err := os.MkdirAll(directory, 0o775)
 	if err != nil {
 		panic(err)
 	}

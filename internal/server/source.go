@@ -1,18 +1,11 @@
 package server
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
-	"path"
 
 	"github.com/Arey125/article-collector/internal/article"
 )
-
-type Link struct {
-	Title string
-	Link  string
-}
 
 type SourcePage struct {
 	Title string
@@ -43,10 +36,7 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
 
 	articleLinks := make([]Link, len(articles))
     for i, article := range articles {
-        articleLinks[i] = Link{
-            Title: article.Name,
-            Link: fmt.Sprintf("/source/%s/%s", article.Source.Domain, path.Base(article.Link)),
-        }
+        articleLinks[i] = getArticleLink(article)
     }
 
 	sourcePage := SourcePage{

@@ -6,7 +6,6 @@ import (
 	"html/template"
 	"net/http"
 	"os"
-	"path"
 
 	"github.com/Arey125/article-collector/internal/article"
 	"github.com/yuin/goldmark"
@@ -42,7 +41,19 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	filePath := path.Join(os.Getenv("FILES"), sourceDomain, articleSlug+".md")
+	var currentArticle *article.Article = nil
+    articleList, err := source.GetArticleList()
+    if err != nil {
+		fmt.Fprint(w, "Cannot get source article list")
+    }
+	for _, cur := range articleList {
+		if cur.GetSlug() == articleSlug {
+			currentArticle = &cur
+			break
+		}
+	}
+
+	filePath := currentArticle.GetFilePath()
 
 	file, err := os.ReadFile(filePath)
 	if err != nil {
@@ -55,10 +66,7 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 
 	articlePage := ArticlePage{
 		Title: articleSlug,
-		Source: Link{
-			Title: source.Name,
-			Link:  path.Join("/source", sourceDomain),
-		},
+		Source: getSourceLink(*source),
 		Content: template.HTML(contentBuffer.String()),
 	}
 

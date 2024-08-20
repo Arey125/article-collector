@@ -2,6 +2,8 @@ package article
 
 import (
 	"net/http"
+	"os"
+	"path"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -17,8 +19,7 @@ type Source struct {
 	ArticleListSelector string
 	NameSelector        string
 	LinkSelector        string
-
-	ArticleMdSelector string
+	ArticleMdSelector   string
 }
 
 func (source Source) GetArticleList() ([]Article, error) {
@@ -46,6 +47,10 @@ func (source Source) GetArticleList() ([]Article, error) {
 	return articles, nil
 }
 
+func (source Source) GetDirectoryPath() string {
+	return path.Join(os.Getenv("FILES"), source.Domain)
+}
+
 var flyIo = Source{
 	Url:    "https://fly.io",
 	Domain: "fly.io",
@@ -69,7 +74,7 @@ var goByExample = Source{
 	ArticleListSelector: "li",
 	NameSelector:        "a",
 	LinkSelector:        "a",
-    ArticleMdSelector:   "table, p",
+	ArticleMdSelector:   "table, p",
 }
 
 var Sources = []Source{goByExample, flyIo}
