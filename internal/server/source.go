@@ -14,29 +14,29 @@ type Link struct {
 	Link  string
 }
 
-type BlogPage struct {
+type SourcePage struct {
 	Title string
 	Links []Link
 }
 
-func (server *Server) Blog(w http.ResponseWriter, req *http.Request) {
+func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	blogDomain := req.PathValue("blog")
+	sourceDomain := req.PathValue("source")
 
-	var blog *article.Source = nil
+	var source *article.Source = nil
 	for _, cur := range article.Sources {
-		if cur.Domain == blogDomain {
-			blog = &cur
+		if cur.Domain == sourceDomain {
+			source = &cur
 			break
 		}
 	}
 
-	if blog == nil {
-		w.Write([]byte("No such blog"))
+	if source == nil {
+		w.Write([]byte("No such source"))
 	}
 
-	articles, err := blog.GetArticleList()
+	articles, err := source.GetArticleList()
     if err != nil {
         panic(err)
     }
@@ -45,15 +45,15 @@ func (server *Server) Blog(w http.ResponseWriter, req *http.Request) {
     for i, article := range articles {
         articleLinks[i] = Link{
             Title: article.Name,
-            Link: fmt.Sprintf("/blog/%s/%s", article.Source.Domain, path.Base(article.Link)),
+            Link: fmt.Sprintf("/source/%s/%s", article.Source.Domain, path.Base(article.Link)),
         }
     }
 
-	blogPage := BlogPage{
-		Title: blogDomain,
+	sourcePage := SourcePage{
+		Title: source.Name,
         Links: articleLinks,
 	}
 
-	templ := template.Must(template.ParseFiles("internal/server/blog.html"))
-	templ.Execute(w, blogPage)
+	templ := template.Must(template.ParseFiles("internal/server/source.html"))
+	templ.Execute(w, sourcePage)
 }

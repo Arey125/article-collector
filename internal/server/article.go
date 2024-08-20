@@ -22,10 +22,10 @@ var mdRenderer = goldmark.New(
 func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-	blog := req.PathValue("blog")
+	source := req.PathValue("source")
 	articleSlug := req.PathValue("article")
 
-	path := path.Join(os.Getenv("FILES"), blog, articleSlug+".md")
+	path := path.Join(os.Getenv("FILES"), source, articleSlug+".md")
 
 	file, err := os.ReadFile(path)
 	if err != nil {

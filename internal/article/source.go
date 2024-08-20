@@ -10,6 +10,8 @@ import (
 type Source struct {
 	Url    string
 	Domain string
+	Name   string
+	Id     string
 
 	ArticleListUrl      string
 	ArticleListSelector string
@@ -45,8 +47,11 @@ func (source Source) GetArticleList() ([]Article, error) {
 }
 
 var flyIo = Source{
-	Url:                 "https://fly.io",
-	Domain:              "fly.io",
+	Url:    "https://fly.io",
+	Domain: "fly.io",
+	Name:   "Fly.io",
+	Id:     "fly.io",
+
 	ArticleListUrl:      "/blog",
 	ArticleListSelector: "article",
 	NameSelector:        "h1",
@@ -55,8 +60,11 @@ var flyIo = Source{
 }
 
 var goByExample = Source{
-	Url:                 "https://gobyexample.com/",
-	Domain:              "gobyexample.com",
+	Url:    "https://gobyexample.com/",
+	Domain: "gobyexample.com",
+	Name:   "Go by Example",
+	Id:     "gobyexample.com",
+
 	ArticleListUrl:      "",
 	ArticleListSelector: "li",
 	NameSelector:        "a",
@@ -65,4 +73,3 @@ var goByExample = Source{
 }
 
 var Sources = []Source{goByExample, flyIo}
-

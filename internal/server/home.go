@@ -9,15 +9,15 @@ import (
 )
 
 func (server *Server) Home(w http.ResponseWriter, req *http.Request) {
-	blogLinks := make([]Link, len(article.Sources))
+	sourceLinks := make([]Link, len(article.Sources))
 
-    for i, blog := range article.Sources {
-        blogLinks[i] = Link{
-            Title: blog.Domain,
-            Link: path.Join("/blog", blog.Domain),
+    for i, source := range article.Sources {
+        sourceLinks[i] = Link{
+            Title: source.Name,
+            Link: path.Join("/source", source.Domain),
         }
     }
 
 	templ := template.Must(template.ParseFiles("internal/server/home.html"))
-	templ.Execute(w, blogLinks)
+	templ.Execute(w, sourceLinks)
 }
