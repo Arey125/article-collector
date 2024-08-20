@@ -69,7 +69,7 @@ var goByExample = Source{
 	ArticleListSelector: "li",
 	NameSelector:        "a",
 	LinkSelector:        "a",
-	ArticleMdSelector:   "body",
+    ArticleMdSelector:   "table, p",
 }
 
 var Sources = []Source{goByExample, flyIo}
