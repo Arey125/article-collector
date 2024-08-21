@@ -30,7 +30,7 @@ func (article Article) GetFilePath() string {
 }
 
 func (article Article) GetMd() (string, error) {
-	html, err := article.GetHtml()
+	html, err := article.getHtml()
 	if err != nil {
 		return "", err
 	}

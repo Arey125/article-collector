@@ -1,7 +1,7 @@
 package article
 
 import (
-	"net/http"
+	"bytes"
 	"os"
 	"path"
 	"strings"
@@ -23,12 +23,13 @@ type Source struct {
 }
 
 func (source Source) GetArticleList() ([]Article, error) {
-	res, err := http.Get(source.Url + source.ArticleListUrl)
+	html, err := source.getHtml()
 	if err != nil {
 		return nil, err
 	}
+    htmlBuffer := bytes.NewReader(html)
 
-	doc, err := goquery.NewDocumentFromReader(res.Body)
+	doc, err := goquery.NewDocumentFromReader(htmlBuffer)
 	if err != nil {
 		return nil, err
 	}
