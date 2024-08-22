@@ -28,8 +28,6 @@ type ArticlePage struct {
 }
 
 func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
 	sourceDomain := req.PathValue("source")
 	articleSlug := req.PathValue("article")
 
@@ -45,6 +43,7 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
     articleList, err := source.GetArticleList()
     if err != nil {
 		fmt.Fprint(w, "Cannot get source article list")
+        return;
     }
 	for _, cur := range articleList {
 		if cur.GetSlug() == articleSlug {
