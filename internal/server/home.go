@@ -14,6 +14,6 @@ func (server *Server) Home(w http.ResponseWriter, req *http.Request) {
         sourceLinks[i] = getSourceLink(source)
     }
 
-	templ := template.Must(template.ParseFiles("internal/server/home.html"))
+	templ := template.Must(template.ParseFiles("ui/home.html"))
 	templ.Execute(w, sourceLinks)
 }

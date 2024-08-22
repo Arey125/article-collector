@@ -44,6 +44,6 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
         Links: articleLinks,
 	}
 
-	templ := template.Must(template.ParseFiles("internal/server/source.html"))
+	templ := template.Must(template.ParseFiles("ui/source.html"))
 	templ.Execute(w, sourcePage)
 }

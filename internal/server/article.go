@@ -69,6 +69,6 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 		Content: template.HTML(contentBuffer.String()),
 	}
 
-	templ := template.Must(template.ParseFiles("internal/server/article.html"))
+	templ := template.Must(template.ParseFiles("ui/article.html"))
 	templ.Execute(w, articlePage)
 }
