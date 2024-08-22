@@ -5,7 +5,7 @@
 </head>
 
 <body>
-    <h1><a href="/">Home</a> / {{.Title}}</h1>
+    {{template "nav" (.Nav)}}
     <ul>
         {{ range .Links }}
         <li><a href="{{ .Link }}">{{ .Title }}</a></li>

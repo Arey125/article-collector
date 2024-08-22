@@ -1,0 +1,8 @@
+{{define "nav"}}
+<nav>
+  {{ range $index, $element := . }} 
+  {{if not (eq $index 0) }} / {{end}}
+  <a href="{{$element.Link}}">{{$element.Title}}</a>
+  {{end}}
+</nav>
+{{end}}

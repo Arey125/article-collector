@@ -23,7 +23,7 @@ var mdRenderer = goldmark.New(
 
 type ArticlePage struct {
 	Title   string
-	Source  Link
+	Nav     []Link
 	Content template.HTML
 }
 
@@ -40,11 +40,11 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 	}
 
 	var currentArticle *article.Article = nil
-    articleList, err := source.GetArticleList()
-    if err != nil {
+	articleList, err := source.GetArticleList()
+	if err != nil {
 		fmt.Fprint(w, "Cannot get source article list")
-        return;
-    }
+		return
+	}
 	for _, cur := range articleList {
 		if cur.GetSlug() == articleSlug {
 			currentArticle = &cur
@@ -64,11 +64,14 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 	mdRenderer.Convert(file, contentBuffer)
 
 	articlePage := ArticlePage{
-		Title: articleSlug,
-		Source: getSourceLink(*source),
-		Content: template.HTML(contentBuffer.String()),
+		Title:   articleSlug,
+		Nav: getArticleNav(*currentArticle),
+        Content: template.HTML(contentBuffer.String()),
 	}
 
-	templ := template.Must(template.ParseFiles("ui/article.html"))
-	templ.Execute(w, articlePage)
+	templ := template.Must(template.ParseFiles("ui/article.html", "ui/partials/nav.html"))
+    err = templ.ExecuteTemplate(w, "article", articlePage)
+    if err != nil {
+        panic(err)
+    }
 }

@@ -9,6 +9,7 @@ import (
 
 type SourcePage struct {
 	Title string
+    Nav   []Link
 	Links []Link
 }
 
@@ -42,8 +43,9 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
 	sourcePage := SourcePage{
 		Title: source.Name,
         Links: articleLinks,
+        Nav:   getSourceNav(*source),
 	}
 
-	templ := template.Must(template.ParseFiles("ui/source.html"))
+	templ := template.Must(template.ParseFiles("ui/source.html", "ui/partials/nav.html"))
 	templ.Execute(w, sourcePage)
 }

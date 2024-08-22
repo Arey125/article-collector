@@ -24,3 +24,18 @@ func getArticleLink(article article.Article) Link {
         Link:  path.Join("/source", article.Source.Domain, path.Base(article.Link)),
     }
 }
+
+func getArticleNav(article article.Article) []Link {
+    return []Link{
+        {Title: "Home", Link: "/"},
+        getSourceLink(*article.Source),
+        getArticleLink(article),
+    }
+}
+
+func getSourceNav(source article.Source) []Link {
+    return []Link{
+        {Title: "Home", Link: "/"},
+        getSourceLink(source),
+    }
+}

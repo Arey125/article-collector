@@ -1,3 +1,4 @@
+{{define "article"}}
 <html>
 
 <head>
@@ -5,8 +6,9 @@
 </head>
 
 <body>
-    <h1><a href="/">Home</a> / <a href="{{ .Source.Link }}">{{ .Source.Title }}</a> / {{ .Title }}</h1>
+    {{template "nav" (.Nav)}}
     {{ .Content }}
 </body>
 
 </html>
+{{end}}
