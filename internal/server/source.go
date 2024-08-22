@@ -46,6 +46,6 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
         Nav:   getSourceNav(*source),
 	}
 
-	templ := template.Must(template.ParseFiles("ui/source.html", "ui/partials/nav.html"))
-	templ.Execute(w, sourcePage)
+	templ := template.Must(template.ParseFiles("ui/base.html", "ui/pages/source.html", "ui/partials/nav.html"))
+	templ.ExecuteTemplate(w, "base", sourcePage)
 }

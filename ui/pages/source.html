@@ -1,16 +1,13 @@
-<html>
+{{define "title"}}Blog{{end}}
 
-<head>
-    <title>Blog</title>
-</head>
-
-<body>
+{{define "navigation"}}
     {{template "nav" (.Nav)}}
+{{end}}
+
+{{define "content"}}
     <ul>
         {{ range .Links }}
         <li><a href="{{ .Link }}">{{ .Title }}</a></li>
         {{ end }}
     </ul>
-</body>
-
-</html>
+{{end}}

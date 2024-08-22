@@ -69,8 +69,8 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
         Content: template.HTML(contentBuffer.String()),
 	}
 
-	templ := template.Must(template.ParseFiles("ui/article.html", "ui/partials/nav.html"))
-    err = templ.ExecuteTemplate(w, "article", articlePage)
+	templ := template.Must(template.ParseFiles("ui/base.html", "ui/pages/article.html", "ui/partials/nav.html"))
+    err = templ.ExecuteTemplate(w, "base", articlePage)
     if err != nil {
         panic(err)
     }

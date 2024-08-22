@@ -4,7 +4,7 @@ import "github.com/alecthomas/chroma/v2/styles"
 import "github.com/alecthomas/chroma/v2"
 
 var Catppuccin = styles.Register(chroma.MustNewStyle("catppuccin", chroma.StyleEntries{
-	chroma.Background:               "bg:#24273a #cad3f5",
+	chroma.Background:               "bg:#1e2030 #cad3f5",
 	chroma.CodeLine:                 "#cad3f5",
 	chroma.Error:                    "#ed8796",
 	chroma.Other:                    "#cad3f5",

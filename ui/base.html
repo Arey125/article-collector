@@ -1,0 +1,19 @@
+{{define "base"}}
+<html>
+    <head>
+        <title>{{template "title" .}}</title>
+        <title>Home</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <link rel="stylesheet" href="/static/normalize.css">
+    </head>
+    <body>
+        <header>
+            {{block "navigation" .}}
+            {{end}}
+        </header>
+        <div class="content">
+            {{template "content" .}}
+        </div>
+    </body>
+</html>
+{{end}}
