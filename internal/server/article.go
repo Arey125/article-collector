@@ -2,7 +2,6 @@ package server
 
 import (
 	"bytes"
-	"fmt"
 	"html/template"
 	"net/http"
 	"os"
@@ -38,11 +37,15 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 			break
 		}
 	}
+    if (source == nil) {
+        notFound(w);
+        return;
+    }
 
 	var currentArticle *article.Article = nil
 	articleList, err := source.GetArticleList()
 	if err != nil {
-		fmt.Fprint(w, "Cannot get source article list")
+        serverError(w, err);
 		return
 	}
 	for _, cur := range articleList {
@@ -51,12 +54,16 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 			break
 		}
 	}
+    if (currentArticle == nil) {
+        notFound(w);
+        return;
+    }
 
 	filePath := currentArticle.GetFilePath()
 
 	file, err := os.ReadFile(filePath)
 	if err != nil {
-		fmt.Fprint(w, "No such file")
+		notFound(w)
 		return
 	}
 
@@ -64,7 +71,7 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 	mdRenderer.Convert(file, contentBuffer)
 
 	articlePage := ArticlePage{
-		Title:   articleSlug,
+		Title:   currentArticle.Name,
 		Nav: getArticleNav(*currentArticle),
         Content: template.HTML(contentBuffer.String()),
 	}
@@ -72,6 +79,6 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 	templ := template.Must(template.ParseFiles("ui/base.html", "ui/pages/article.html", "ui/partials/nav.html"))
     err = templ.ExecuteTemplate(w, "base", articlePage)
     if err != nil {
-        panic(err)
+        serverError(w, err)
     }
 }

@@ -27,12 +27,13 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if source == nil {
-		w.Write([]byte("No such source"))
+        notFound(w)
+        return;
 	}
 
 	articles, err := source.GetArticleList()
     if err != nil {
-        panic(err)
+        serverError(w, err);
     }
 
 	articleLinks := make([]Link, len(articles))
@@ -47,5 +48,8 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
 	}
 
 	templ := template.Must(template.ParseFiles("ui/base.html", "ui/pages/source.html", "ui/partials/nav.html"))
-	templ.ExecuteTemplate(w, "base", sourcePage)
+    err = templ.ExecuteTemplate(w, "base", sourcePage)
+    if err != nil {
+        serverError(w, err)
+    }
 }

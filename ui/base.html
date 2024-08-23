@@ -2,12 +2,12 @@
 <html>
     <head>
         <title>{{template "title" .}}</title>
-        <title>Home</title>
         <link rel="stylesheet" href="/static/style.css">
         <link rel="stylesheet" href="/static/normalize.css">
     </head>
     <body>
         <header>
+            <a id="logo" href="/">Article Collector</a>
             {{block "navigation" .}}
             {{end}}
         </header>
