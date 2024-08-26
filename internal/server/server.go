@@ -7,18 +7,20 @@ import (
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/Arey125/article-collector/internal/models"
 )
 
 type Server struct {
     port int
-    db *sql.DB
+    article models.ArticleModel
 }
 
 func NewServer(db *sql.DB) *http.Server {
     port, _ := strconv.Atoi(os.Getenv("PORT"))
     newServer := &Server {
         port: port,
-        db: db,
+        article: models.ArticleModel{DB: db},
     }
 
     server := &http.Server {

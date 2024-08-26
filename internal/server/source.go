@@ -31,7 +31,7 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
         return;
 	}
 
-	articles, err := source.GetArticleListFromHtml()
+	articles, err := server.article.FromSource(source.Id)
     if err != nil {
         serverError(w, err);
     }

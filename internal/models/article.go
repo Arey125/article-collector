@@ -2,6 +2,8 @@ package models
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
 
 	. "github.com/Arey125/article-collector/internal/article"
 )
@@ -18,5 +20,35 @@ func (model *ArticleModel) InsertOrReplace(article *Article) error {
 }
 
 func (model *ArticleModel) FromSource(sourceId string) ([]Article, error) {
-    return nil, nil // TODO
+    source, ok := SourceMap[sourceId]
+    if (!ok) {
+        return nil, errors.New("No such source")
+    }
+
+    stmt := "SELECT name, link FROM articles WHERE source_id = ?"
+    rows, err := model.DB.Query(stmt, sourceId)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+    articles := []Article{}
+
+    for rows.Next() {
+        article := Article{
+            Source: source,
+        }
+
+        err := rows.Scan(&article.Name, &article.Link)
+        if err != nil {
+            return nil, err
+        }
+
+        articles = append(articles, article)
+    }
+
+    if err := rows.Err(); err != nil {
+        return nil, err
+    }
+
+    return articles, nil
 }
