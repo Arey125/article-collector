@@ -40,7 +40,7 @@ func (source Source) GetArticleListFromHtml() ([]Article, error) {
 		articleNode := articleSelect.Eq(i)
 		articles[i] = Article{
 			Name:   strings.TrimSpace(articleNode.Find(source.NameSelector).Text()),
-			Link:   path.Join(source.Url, articleNode.Find(source.LinkSelector).AttrOr("href", "")),
+			Link:   source.Url + articleNode.Find(source.LinkSelector).AttrOr("href", ""),
 			Source: &source,
 		}
 	}
@@ -79,7 +79,10 @@ var goByExample = Source{
 }
 
 var Sources = []*Source{&goByExample, &flyIo}
-var SourceMap = map[string]*Source{
-    "gobyexample.com": &goByExample,
-    "fly.io": &flyIo,
-}
+var SourceMap = (func () map[string]*Source {
+    sourcesMap := map[string]*Source{}
+    for _, source := range Sources {
+        sourcesMap[source.Id] = source
+    }
+    return sourcesMap
+})()
