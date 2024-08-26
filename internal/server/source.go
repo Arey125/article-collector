@@ -9,7 +9,7 @@ import (
 
 type SourcePage struct {
 	Title string
-    Nav   []Link
+	Nav   []Link
 	Links []Link
 }
 
@@ -27,29 +27,29 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if source == nil {
-        notFound(w)
-        return;
+		notFound(w)
+		return
 	}
 
 	articles, err := server.article.FromSource(source.Id)
-    if err != nil {
-        serverError(w, err);
-    }
+	if err != nil {
+		serverError(w, err)
+	}
 
 	articleLinks := make([]Link, len(articles))
-    for i, article := range articles {
-        articleLinks[i] = getArticleLink(article)
-    }
+	for i, article := range articles {
+		articleLinks[i] = getArticleLink(article)
+	}
 
 	sourcePage := SourcePage{
 		Title: source.Name,
-        Links: articleLinks,
-        Nav:   getSourceNav(*source),
+		Links: articleLinks,
+		Nav:   getSourceNav(*source),
 	}
 
 	templ := template.Must(template.ParseFiles("ui/base.html", "ui/pages/source.html", "ui/partials/nav.html"))
-    err = templ.ExecuteTemplate(w, "base", sourcePage)
-    if err != nil {
-        serverError(w, err)
-    }
+	err = templ.ExecuteTemplate(w, "base", sourcePage)
+	if err != nil {
+		serverError(w, err)
+	}
 }

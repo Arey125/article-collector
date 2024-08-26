@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Arey125/article-collector/internal/article"
+	"github.com/Arey125/article-collector/internal/database"
 	"github.com/Arey125/article-collector/internal/models"
 	"github.com/Arey125/article-collector/internal/server"
 	_ "github.com/joho/godotenv/autoload"
@@ -15,7 +16,7 @@ import (
 
 func main() {
 	args := os.Args[1:]
-	db, err := models.InitDb()
+	db, err := database.InitDb()
 	if err != nil {
 		panic(err)
 	}
