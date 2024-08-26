@@ -10,10 +10,10 @@ import (
 )
 
 type Source struct {
+	Id     string
 	Url    string
 	Domain string
 	Name   string
-	Id     string
 
 	ArticleListUrl      string
 	ArticleListSelector string
@@ -22,7 +22,7 @@ type Source struct {
 	ArticleMdSelector   string
 }
 
-func (source Source) GetArticleList() ([]Article, error) {
+func (source Source) GetArticleListFromHtml() ([]Article, error) {
 	html, err := source.getHtml()
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (source Source) GetArticleList() ([]Article, error) {
 		articleNode := articleSelect.Eq(i)
 		articles[i] = Article{
 			Name:   strings.TrimSpace(articleNode.Find(source.NameSelector).Text()),
-			Link:   articleNode.Find(source.LinkSelector).AttrOr("href", ""),
+			Link:   path.Join(source.Url, articleNode.Find(source.LinkSelector).AttrOr("href", "")),
 			Source: &source,
 		}
 	}
@@ -53,10 +53,10 @@ func (source Source) GetDirectoryPath() string {
 }
 
 var flyIo = Source{
+	Id:     "fly.io",
 	Url:    "https://fly.io",
 	Domain: "fly.io",
 	Name:   "Fly.io",
-	Id:     "fly.io",
 
 	ArticleListUrl:      "/blog",
 	ArticleListSelector: "article",
@@ -66,10 +66,10 @@ var flyIo = Source{
 }
 
 var goByExample = Source{
+	Id:     "gobyexample.com",
 	Url:    "https://gobyexample.com/",
 	Domain: "gobyexample.com",
 	Name:   "Go by Example",
-	Id:     "gobyexample.com",
 
 	ArticleListUrl:      "",
 	ArticleListSelector: "li",
@@ -78,4 +78,8 @@ var goByExample = Source{
 	ArticleMdSelector:   "table, p",
 }
 
-var Sources = []Source{goByExample, flyIo}
+var Sources = []*Source{&goByExample, &flyIo}
+var SourceMap = map[string]*Source{
+    "gobyexample.com": &goByExample,
+    "fly.io": &flyIo,
+}

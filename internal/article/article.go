@@ -2,16 +2,15 @@ package article
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"path"
-	"time"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/PuerkitoBio/goquery"
 )
 
 type Article struct {
+	Id     string
 	Name   string
 	Link   string
 	Source *Source
@@ -34,7 +33,7 @@ func (article Article) GetMd() (string, error) {
 	if err != nil {
 		return "", err
 	}
-    htmlBuffer := bytes.NewReader(html)
+	htmlBuffer := bytes.NewReader(html)
 
 	doc, err := goquery.NewDocumentFromReader(htmlBuffer)
 	if err != nil {
@@ -69,8 +68,8 @@ func (article Article) SaveToFileIfDoesNotExist() (isFromNetwork bool, error err
 		panic(err)
 	}
 
-    htmlPath := article.getHtmlPath()
-    _, htmlFileErr := os.Stat(htmlPath)
+	htmlPath := article.getHtmlPath()
+	_, htmlFileErr := os.Stat(htmlPath)
 
 	md, err := article.GetMd()
 	if err != nil {
@@ -81,22 +80,3 @@ func (article Article) SaveToFileIfDoesNotExist() (isFromNetwork bool, error err
 	return htmlFileErr != nil, nil
 }
 
-func SaveAllArticlesFromSource(source Source) error {
-	articles, err := source.GetArticleList()
-	if err != nil {
-		return err
-	}
-
-	for _, article := range articles {
-		saved, err := article.SaveToFileIfDoesNotExist()
-		if err != nil {
-			panic(err)
-		}
-		if saved {
-			fmt.Printf("\"%s\" from %s is saved\n", article.Name, article.Source.Domain)
-			time.Sleep(400 * time.Millisecond)
-		}
-	}
-
-	return nil
-}

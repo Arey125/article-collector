@@ -61,7 +61,7 @@ func getHtml(htmlUrl string, htmlPath string) ([]byte, error) {
 
 func (article Article) getHtml() ([]byte, error) {
 	htmlPath := article.getHtmlPath()
-	htmlUrl := article.Source.Url + article.Link
+	htmlUrl := article.Link
     return getHtml(htmlUrl, htmlPath)
 }
 

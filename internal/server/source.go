@@ -21,7 +21,7 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
 	var source *article.Source = nil
 	for _, cur := range article.Sources {
 		if cur.Domain == sourceDomain {
-			source = &cur
+			source = cur
 			break
 		}
 	}
@@ -31,7 +31,7 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
         return;
 	}
 
-	articles, err := source.GetArticleList()
+	articles, err := source.GetArticleListFromHtml()
     if err != nil {
         serverError(w, err);
     }

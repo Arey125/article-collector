@@ -33,7 +33,7 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 	var source *article.Source = nil
 	for _, cur := range article.Sources {
 		if cur.Domain == sourceDomain {
-			source = &cur
+			source = cur
 			break
 		}
 	}
@@ -43,7 +43,7 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
     }
 
 	var currentArticle *article.Article = nil
-	articleList, err := source.GetArticleList()
+	articleList, err := source.GetArticleListFromHtml()
 	if err != nil {
         serverError(w, err);
 		return
