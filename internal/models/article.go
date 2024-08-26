@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
 	. "github.com/Arey125/article-collector/internal/article"
 )
