@@ -6,3 +6,9 @@ run: all
 
 save: all
 	@./bin/article-collector save
+
+mkmgr:
+	@./scripts/make_migration.sh
+
+sqlite:
+	@sqlite3 ./bin/sqlite.db

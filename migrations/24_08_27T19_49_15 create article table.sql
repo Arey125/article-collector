@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS articles (
+    link TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    source_id TEXT NOT NULL
+);
