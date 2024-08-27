@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
+	"github.com/Arey125/article-collector/internal/article"
 	. "github.com/Arey125/article-collector/internal/article"
 )
 
@@ -24,7 +25,7 @@ func (model *ArticleModel) FromSource(sourceId string) ([]Article, error) {
         return nil, errors.New("No such source")
     }
 
-    stmt := "SELECT name, link FROM articles WHERE source_id = ?"
+    stmt := "SELECT name, link, status_id FROM articles WHERE source_id = ?"
     rows, err := model.DB.Query(stmt, sourceId)
     if err != nil {
         return nil, err
@@ -33,11 +34,9 @@ func (model *ArticleModel) FromSource(sourceId string) ([]Article, error) {
     articles := []Article{}
 
     for rows.Next() {
-        article := Article{
-            Source: source,
-        }
+        article := article.NewArticle("", "", source)
 
-        err := rows.Scan(&article.Name, &article.Link)
+        err := rows.Scan(&article.Name, &article.Link, &article.Status)
         if err != nil {
             return nil, err
         }

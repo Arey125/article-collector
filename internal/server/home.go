@@ -1,10 +1,10 @@
 package server
 
 import (
-	"html/template"
 	"net/http"
 
 	"github.com/Arey125/article-collector/internal/article"
+    . "github.com/Arey125/article-collector/internal/server/template"
 )
 
 func (server *Server) Home(w http.ResponseWriter, req *http.Request) {
@@ -14,6 +14,6 @@ func (server *Server) Home(w http.ResponseWriter, req *http.Request) {
         sourceLinks[i] = getSourceLink(*source)
     }
 
-	templ := template.Must(template.ParseFiles("ui/base.html", "ui/pages/home.html"))
+	templ := NewTemplate("home")
 	templ.ExecuteTemplate(w, "base", sourceLinks)
 }

@@ -1,7 +1,9 @@
-package server
+package code_colors
 
-import "github.com/alecthomas/chroma/v2/styles"
-import "github.com/alecthomas/chroma/v2"
+import (
+	"github.com/alecthomas/chroma/v2"
+	"github.com/alecthomas/chroma/v2/styles"
+)
 
 var Catppuccin = styles.Register(chroma.MustNewStyle("catppuccin", chroma.StyleEntries{
 	chroma.Background:               "bg:#1e2030 #cad3f5",

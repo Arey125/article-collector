@@ -89,3 +89,16 @@ img {
     margin-top: 16px;
     margin-bottom: 16px;
 }
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.change-status {
+    font-size: 0.75rem;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+}

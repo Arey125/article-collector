@@ -27,7 +27,7 @@ func (source Source) GetArticleListFromHtml() ([]Article, error) {
 	if err != nil {
 		return nil, err
 	}
-    htmlBuffer := bytes.NewReader(html)
+	htmlBuffer := bytes.NewReader(html)
 
 	doc, err := goquery.NewDocumentFromReader(htmlBuffer)
 	if err != nil {
@@ -38,18 +38,18 @@ func (source Source) GetArticleListFromHtml() ([]Article, error) {
 	articles := make([]Article, len(articleSelect.Nodes), len(articleSelect.Nodes))
 	for i := range articleSelect.Nodes {
 		articleNode := articleSelect.Eq(i)
-		articles[i] = Article{
-			Name:   strings.TrimSpace(articleNode.Find(source.NameSelector).Text()),
-			Link:   source.Url + articleNode.Find(source.LinkSelector).AttrOr("href", ""),
-			Source: &source,
-		}
+		articles[i] = NewArticle(
+			strings.TrimSpace(articleNode.Find(source.NameSelector).Text()),
+			source.Url+articleNode.Find(source.LinkSelector).AttrOr("href", ""),
+			&source,
+		)
 	}
 
 	return articles, nil
 }
 
 func (source Source) GetDirectoryPath() string {
-	return path.Join(os.Getenv("FILES"), "md" ,source.Domain)
+	return path.Join(os.Getenv("FILES"), "md", source.Domain)
 }
 
 var flyIo = Source{
@@ -79,10 +79,10 @@ var goByExample = Source{
 }
 
 var Sources = []*Source{&goByExample, &flyIo}
-var SourceMap = (func () map[string]*Source {
-    sourcesMap := map[string]*Source{}
-    for _, source := range Sources {
-        sourcesMap[source.Id] = source
-    }
-    return sourcesMap
+var SourceMap = (func() map[string]*Source {
+	sourcesMap := map[string]*Source{}
+	for _, source := range Sources {
+		sourcesMap[source.Id] = source
+	}
+	return sourcesMap
 })()

@@ -10,10 +10,21 @@ import (
 )
 
 type Article struct {
-	Id     string
 	Name   string
 	Link   string
 	Source *Source
+
+	Status string
+}
+
+func NewArticle(name string, link string, source *Source) Article {
+    return Article{
+        Name:   name,
+        Link:   link,
+        Source: source,
+
+        Status: "unread",
+    }
 }
 
 func (article Article) GetSlug() string {
@@ -79,4 +90,3 @@ func (article Article) SaveToFileIfDoesNotExist() (isFromNetwork bool, error err
 	outputFile.Write([]byte(md))
 	return htmlFileErr != nil, nil
 }
-

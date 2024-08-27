@@ -6,9 +6,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Arey125/article-collector/internal/article"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
+
+	"github.com/Arey125/article-collector/internal/article"
+	. "github.com/Arey125/article-collector/internal/server/template"
 )
 
 var mdRenderer = goldmark.New(
@@ -22,6 +24,7 @@ var mdRenderer = goldmark.New(
 
 type ArticlePage struct {
 	Title   string
+    Status  string
 	Nav     []Link
 	Content template.HTML
 }
@@ -74,9 +77,10 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 		Title:   currentArticle.Name,
 		Nav: getArticleNav(*currentArticle),
         Content: template.HTML(contentBuffer.String()),
+        Status: currentArticle.Status,
 	}
 
-	templ := template.Must(template.ParseFiles("ui/base.html", "ui/pages/article.html", "ui/partials/nav.html"))
+	templ := NewTemplate("article")
     err = templ.ExecuteTemplate(w, "base", articlePage)
     if err != nil {
         serverError(w, err)

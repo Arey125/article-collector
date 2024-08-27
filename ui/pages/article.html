@@ -5,6 +5,9 @@
 {{end}}
 
 {{define "content"}}
+<div class="title">
     <h1>{{ .Title }}</h1>
+    {{ template "status" .Status }}
+</div>
     {{ .Content }}
 {{end}}

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Arey125/article-collector/internal/models"
+	_ "github.com/Arey125/article-collector/internal/server/code_colors"
 )
 
 type Server struct {

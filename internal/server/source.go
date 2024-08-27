@@ -1,10 +1,10 @@
 package server
 
 import (
-	"html/template"
 	"net/http"
 
 	"github.com/Arey125/article-collector/internal/article"
+	. "github.com/Arey125/article-collector/internal/server/template"
 )
 
 type SourcePage struct {
@@ -47,7 +47,7 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
 		Nav:   getSourceNav(*source),
 	}
 
-	templ := template.Must(template.ParseFiles("ui/base.html", "ui/pages/source.html", "ui/partials/nav.html"))
+    templ := NewTemplate("source")
 	err = templ.ExecuteTemplate(w, "base", sourcePage)
 	if err != nil {
 		serverError(w, err)
