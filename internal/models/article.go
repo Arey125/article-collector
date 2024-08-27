@@ -19,34 +19,49 @@ func (model *ArticleModel) InsertOrReplace(article *Article) error {
 	return err
 }
 
+func (model *ArticleModel) Get(sourceId string, name string) (*Article, error) {
+	const stmt = "SELECT (name, link, status_id) FROM articles WHERE source_id = ? AND name = ?"
+
+	row := model.DB.QueryRow(stmt, sourceId, name)
+	if err := row.Err(); err != nil {
+		return nil, err
+	}
+
+    article := &Article{
+        Source: SourceMap[sourceId],
+    }
+    row.Scan(&article.Name, article.Link, article.Status)
+    return article, nil
+}
+
 func (model *ArticleModel) FromSource(sourceId string) ([]Article, error) {
-    source, ok := SourceMap[sourceId]
-    if (!ok) {
-        return nil, errors.New("No such source")
-    }
+	source, ok := SourceMap[sourceId]
+	if !ok {
+		return nil, errors.New("No such source")
+	}
 
-    stmt := "SELECT name, link, status_id FROM articles WHERE source_id = ?"
-    rows, err := model.DB.Query(stmt, sourceId)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
-    articles := []Article{}
+	stmt := "SELECT name, link, status_id FROM articles WHERE source_id = ?"
+	rows, err := model.DB.Query(stmt, sourceId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	articles := []Article{}
 
-    for rows.Next() {
-        article := article.NewArticle("", "", source)
+	for rows.Next() {
+		article := article.NewArticle("", "", source)
 
-        err := rows.Scan(&article.Name, &article.Link, &article.Status)
-        if err != nil {
-            return nil, err
-        }
+		err := rows.Scan(&article.Name, &article.Link, &article.Status)
+		if err != nil {
+			return nil, err
+		}
 
-        articles = append(articles, article)
-    }
+		articles = append(articles, article)
+	}
 
-    if err := rows.Err(); err != nil {
-        return nil, err
-    }
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 
-    return articles, nil
+	return articles, nil
 }

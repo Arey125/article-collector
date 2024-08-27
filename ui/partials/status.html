@@ -1,5 +1,5 @@
 {{ define "status" }}
-<button class="change-status">
+<button hx-post="{{.}}">
     {{ if eq . "unread" }}Finish{{else}}Mark as unread{{end}}
 </button>
 {{end}}

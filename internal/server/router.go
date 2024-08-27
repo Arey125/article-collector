@@ -9,6 +9,7 @@ func (server *Server) RegisterRoutes() http.Handler {
 	mux.HandleFunc("GET /", server.Home)
 	mux.HandleFunc("GET /source/{source}", server.Source)
 	mux.HandleFunc("GET /source/{source}/{article}", server.Article)
+	mux.HandleFunc("POST /source/{source}/{article}/{action}", server.Status)
 
     fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
