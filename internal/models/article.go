@@ -12,22 +12,22 @@ type ArticleModel struct {
 }
 
 func (model *ArticleModel) InsertOrReplace(article *Article) error {
-	stmt := "INSERT OR REPLACE INTO articles (name, link, source_id) VALUES (?, ?, ?)"
+	stmt := "INSERT OR REPLACE INTO articles (name, link, source_id, slug) VALUES (?, ?, ?)"
 	_, err := model.DB.Exec(stmt,
-		article.Name, article.Link, article.Source.Id)
+		article.Name, article.Link, article.Source.Id, article.Slug)
 	return err
 }
 
-func (model *ArticleModel) Get(sourceId string, name string) (*Article, error) {
-	const stmt = "SELECT link, status_id FROM articles WHERE source_id = ? AND name = ?"
+func (model *ArticleModel) Get(sourceId string, slug string) (*Article, error) {
+	const stmt = "SELECT name, link, status_id FROM articles WHERE source_id = ? AND slug = ?"
 
-	row := model.DB.QueryRow(stmt, sourceId, name)
+	row := model.DB.QueryRow(stmt, sourceId, slug)
 	if err := row.Err(); err != nil {
 		return nil, err
 	}
 
-    var link, statusId string
-    err := row.Scan(&link, &statusId)
+    var name, link, statusId string
+    err := row.Scan(&name, &link, &statusId)
     if err != nil {
         return nil, err
     }
