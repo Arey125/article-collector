@@ -7,8 +7,13 @@ import (
 	"sort"
 )
 
+type migration struct {
+    file string
+    stmt string
+}
+
 func migrate(db *sql.DB) error {
-    stmts := getAllMigrationStmts()
+    migrations := getAllMigrations()
     tx, err := db.Begin()
     if err != nil {
         panic(err)
@@ -21,15 +26,17 @@ func migrate(db *sql.DB) error {
         panic(err)
     }
 
-    for _, stmt := range stmts[version:] {
-        _, err := tx.Exec(stmt)
+    for _, migration := range migrations[version:] {
+        fmt.Printf("Migration %s started\n", migration.file)
+        _, err := tx.Exec(migration.stmt)
         if err != nil {
-            fmt.Println(stmt)
+            fmt.Printf("Error in migration %s",migration.file)
             panic(err)
         }
+        fmt.Println("Done")
     }
 
-    err = setVersion(tx, len(stmts))
+    err = setVersion(tx, len(migrations))
     if err != nil {
         panic(err)
     }
@@ -48,7 +55,7 @@ func setVersion(tx *sql.Tx, version int) error {
     return err
 }
 
-func getAllMigrationStmts() []string {
+func getAllMigrations() []migration {
     migrationFiles, err := os.ReadDir("migrations")
     if err != nil {
         panic(err)
@@ -63,15 +70,15 @@ func getAllMigrationStmts() []string {
     }
     sort.Strings(filePaths)
 
-    stmts := make([]string, 0, len(migrationFiles))
+    migrations := make([]migration, 0, len(migrationFiles))
     for _, filePath := range filePaths {
         content, err := os.ReadFile(filePath)
         if err != nil {
             panic(err)
         }
-
-        stmts = append(stmts, string(content))
+        migration := migration{file: filePath, stmt: string(content)}
+        migrations = append(migrations, migration)
     }
 
-    return stmts
+    return migrations
 }

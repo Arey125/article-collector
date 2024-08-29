@@ -1,3 +1,5 @@
+include .env
+
 all:
 	@go build -o bin/article-collector cmd/main.go
 
@@ -11,4 +13,4 @@ mkmgr:
 	@./scripts/make_migration.sh
 
 sqlite:
-	@sqlite3 ./bin/sqlite.db
+	@sqlite3 $(DB)

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 )
@@ -18,10 +19,12 @@ func (server *Server) Status(w http.ResponseWriter, req *http.Request) {
 	article, err := server.article.Get(sourceDomain, articleSlug)
 	if err != nil {
 		serverError(w, err)
+        return;
 	}
+    fmt.Println(article.Status)
 
 	tmpl := template.Must(template.ParseFiles("./ui/partials/status.html"))
-	err = tmpl.ExecuteTemplate(w, "status", article.Status)
+	err = tmpl.ExecuteTemplate(w, "status", article)
 	if err != nil {
         serverError(w, err)
 	}

@@ -12,6 +12,7 @@ import (
 type Article struct {
 	Name   string
 	Link   string
+	Slug   string
 	Source *Source
 
 	Status string
@@ -22,6 +23,7 @@ func NewArticle(name string, link string, source *Source) Article {
         Name:   name,
         Link:   link,
         Source: source,
+        Slug:   path.Base(link),
 
         Status: "unread",
     }

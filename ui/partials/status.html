@@ -1,5 +1,8 @@
 {{ define "status" }}
-<button hx-post="{{.}}">
-    {{ if eq . "unread" }}Finish{{else}}Mark as unread{{end}}
+<button 
+    hx-post="/source/{{.Source.Id}}/{{.GetSlug}}/{{ if eq .Status "unread" }}read{{else}}unread{{end}}"
+    hx-swap="outerHTML"
+    >
+    {{ if eq .Status "unread" }}Finish{{else}}Mark as unread{{end}}
 </button>
 {{end}}

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/Arey125/article-collector/internal/article"
 	. "github.com/Arey125/article-collector/internal/article"
 )
 
@@ -20,18 +19,22 @@ func (model *ArticleModel) InsertOrReplace(article *Article) error {
 }
 
 func (model *ArticleModel) Get(sourceId string, name string) (*Article, error) {
-	const stmt = "SELECT (name, link, status_id) FROM articles WHERE source_id = ? AND name = ?"
+	const stmt = "SELECT link, status_id FROM articles WHERE source_id = ? AND name = ?"
 
 	row := model.DB.QueryRow(stmt, sourceId, name)
 	if err := row.Err(); err != nil {
 		return nil, err
 	}
 
-    article := &Article{
-        Source: SourceMap[sourceId],
+    var link, statusId string
+    err := row.Scan(&link, &statusId)
+    if err != nil {
+        return nil, err
     }
-    row.Scan(&article.Name, article.Link, article.Status)
-    return article, nil
+    article := NewArticle(name, link, SourceMap[sourceId])
+    article.Status = statusId
+
+    return &article, nil
 }
 
 func (model *ArticleModel) FromSource(sourceId string) ([]Article, error) {
@@ -49,13 +52,15 @@ func (model *ArticleModel) FromSource(sourceId string) ([]Article, error) {
 	articles := []Article{}
 
 	for rows.Next() {
-		article := article.NewArticle("", "", source)
+        var name, link, statusId string
 
-		err := rows.Scan(&article.Name, &article.Link, &article.Status)
+		err := rows.Scan(&name, &link, &statusId)
 		if err != nil {
 			return nil, err
 		}
 
+		article := NewArticle(name, link, source)
+        article.Status = statusId
 		articles = append(articles, article)
 	}
 

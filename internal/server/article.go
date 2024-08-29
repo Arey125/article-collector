@@ -24,7 +24,7 @@ var mdRenderer = goldmark.New(
 
 type ArticlePage struct {
 	Title   string
-    Status  string
+    Article article.Article
 	Nav     []Link
 	Content template.HTML
 }
@@ -77,7 +77,7 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 		Title:   currentArticle.Name,
 		Nav: getArticleNav(*currentArticle),
         Content: template.HTML(contentBuffer.String()),
-        Status: currentArticle.Status,
+        Article: *currentArticle,
 	}
 
 	templ := NewTemplate("article")
