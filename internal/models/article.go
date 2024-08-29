@@ -12,7 +12,7 @@ type ArticleModel struct {
 }
 
 func (model *ArticleModel) InsertOrReplace(article *Article) error {
-	stmt := "INSERT OR REPLACE INTO articles (name, link, source_id, slug) VALUES (?, ?, ?)"
+	stmt := "INSERT OR REPLACE INTO articles (name, link, source_id, slug) VALUES (?, ?, ?, ?)"
 	_, err := model.DB.Exec(stmt,
 		article.Name, article.Link, article.Source.Id, article.Slug)
 	return err
