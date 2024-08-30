@@ -33,32 +33,9 @@ func (server *Server) Article(w http.ResponseWriter, req *http.Request) {
 	sourceDomain := req.PathValue("source")
 	articleSlug := req.PathValue("article")
 
-	var source *article.Source = nil
-	for _, cur := range article.Sources {
-		if cur.Domain == sourceDomain {
-			source = cur
-			break
-		}
-	}
-    if (source == nil) {
-        notFound(w);
-        return;
-    }
-
-	var currentArticle *article.Article = nil
-	articleList, err := source.GetArticleListFromHtml()
-	if err != nil {
-        serverError(w, err);
-		return
-	}
-	for _, cur := range articleList {
-		if cur.GetSlug() == articleSlug {
-			currentArticle = &cur
-			break
-		}
-	}
-    if (currentArticle == nil) {
-        notFound(w);
+    currentArticle, err := server.article.Get(sourceDomain, articleSlug)
+    if err != nil {
+        notFound(w)
         return;
     }
 

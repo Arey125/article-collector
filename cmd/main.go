@@ -46,6 +46,9 @@ func saveAllArticlesFromSource(source article.Source, db *sql.DB) error {
 	if err != nil {
 		return err
 	}
+    for i := range articles {
+        articles[i].Sort = i + 1
+    }
 
 	for _, article := range articles {
 		err := articleModel.InsertOrReplace(&article)

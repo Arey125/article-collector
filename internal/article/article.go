@@ -16,6 +16,7 @@ type Article struct {
 	Source *Source
 
 	Status string
+    Sort   int
 }
 
 func NewArticle(name string, link string, source *Source) Article {
