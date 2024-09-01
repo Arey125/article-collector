@@ -78,7 +78,20 @@ var goByExample = Source{
 	ArticleMdSelector:   "table, p",
 }
 
-var Sources = []*Source{&goByExample, &flyIo}
+var jvns = Source{
+    Id:     "jvns.ca",
+    Url:    "https://jvns.ca",
+    Domain: "jvns.ca",
+    Name:   "Julia Evans",
+
+    ArticleListUrl:      "",
+    ArticleListSelector: ".article-row",
+    NameSelector:        "a",
+    LinkSelector:        "a",
+    ArticleMdSelector:   ".entry-content",
+}
+
+var Sources = []*Source{&goByExample, &flyIo, &jvns}
 var SourceMap = (func() map[string]*Source {
 	sourcesMap := map[string]*Source{}
 	for _, source := range Sources {
