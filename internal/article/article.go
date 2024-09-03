@@ -2,8 +2,10 @@ package article
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path"
+	"regexp"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/PuerkitoBio/goquery"
@@ -57,7 +59,13 @@ func (article Article) GetMd() (string, error) {
 	articleElement := doc.Find(article.Source.ArticleMdSelector)
 	converter := md.NewConverter(article.Source.Domain, true, nil)
 
-	return converter.Convert(articleElement), nil
+    converted := converter.Convert(articleElement)
+    codeBlockRegex := regexp.MustCompile("```[\\s\\S]*?```")
+
+    codeBlockPositions := codeBlockRegex.FindAllStringIndex(converted, -1)
+    fmt.Println(codeBlockPositions)
+
+    return converted, nil
 }
 
 func (article Article) SaveToFileIfDoesNotExist() (isFromNetwork bool, error error) {
