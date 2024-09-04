@@ -34,6 +34,10 @@ header {
   padding: 0.5rem 2rem 1rem 2rem;
   margin-top: 1rem;
   border-radius: 8px;
+
+  li {
+    line-height: 1.75rem;
+  }
 }
 
 nav {
@@ -67,7 +71,7 @@ pre {
   line-height: 1.4rem;
 }
 
-li {
+.links li {
   line-height: 1.6rem;
   font-size: 1.1rem;
 }
@@ -79,6 +83,11 @@ p {
     color: #ee99a0;
     padding-inline: 0.25rem;
   }
+}
+
+li code {
+  color: #ee99a0;
+  padding-inline: 0.25rem;
 }
 
 img {
