@@ -2,10 +2,10 @@ package article
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"path"
 	"regexp"
+	"strings"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/PuerkitoBio/goquery"
@@ -62,10 +62,22 @@ func (article Article) GetMd() (string, error) {
     converted := converter.Convert(articleElement)
     codeBlockRegex := regexp.MustCompile("```[\\s\\S]*?```")
 
-    codeBlockPositions := codeBlockRegex.FindAllStringIndex(converted, -1)
-    fmt.Println(codeBlockPositions)
+    codeBlocks := codeBlockRegex.FindAllString(converted, -1)
+    notCodeBlocks := codeBlockRegex.Split(converted, -1)
 
-    return converted, nil
+    builder := strings.Builder{}
+    for i := range notCodeBlocks {
+        builder.WriteString(notCodeBlocks[i])
+        if i < len(codeBlocks) {
+            codeBlock := codeBlocks[i]
+            language := getCodeBlockLanguage(codeBlock) 
+            withLanguage := codeBlock[:3] + language + codeBlock[3:]
+
+            builder.WriteString(withLanguage)
+        }
+    }
+
+    return builder.String(), nil
 }
 
 func (article Article) SaveToFileIfDoesNotExist() (isFromNetwork bool, error error) {
