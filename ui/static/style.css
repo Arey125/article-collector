@@ -3,10 +3,29 @@
   src: url("/static/inter-v3-latin-regular.woff2");
 }
 
+@media only screen and (max-width: 1200px) {
+  /* For mobile phones: */
+  body {
+    font-size: 24px !important;
+  }
+  pre {
+    font-size: 20px !important;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  /* For mobile phones: */
+  body {
+    font-size: 16 !important;
+  }
+  pre {
+    font-size: 14px !important;
+  }
+}
+
 body {
   font-family: Inter;
   background-color: #181926;
-  font-size: 16px;
   color: #cad3f5;
   padding-bottom: 70px;
   padding-top: 3.5rem;
@@ -60,20 +79,19 @@ ul a {
 #logo {
   color: #fff;
   font-weight: 700;
-  font-size: 1.25rem;
+  font-size: 1.25em;
 }
 
 pre {
   padding: 0.75rem;
   border: 1px solid #30363d;
   border-radius: 8px;
-  font-size: 0.85rem !important;
-  line-height: 1.4rem;
+  line-height: 1.4em;
 }
 
 .links li {
-  line-height: 1.6rem;
-  font-size: 1.1rem;
+  line-height: 1.6em;
+  font-size: 1.1em;
 }
 
 p {
