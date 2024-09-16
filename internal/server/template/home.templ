@@ -1,0 +1,22 @@
+package template
+
+type TemplateLink struct {
+	Title string
+	Link  string
+}
+
+templ homeNavigation() {
+}
+
+templ homeContent(sources []TemplateLink) {
+	<h1>Home</h1>
+	<ul>
+		for _, item := range sources {
+			<li><a href={ templ.SafeURL(item.Link) }>{ item.Title }</a></li>
+		}
+	</ul>
+}
+
+templ Home(sources []TemplateLink) {
+    @base("Home", homeNavigation(), homeContent(sources))
+}

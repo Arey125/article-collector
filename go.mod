@@ -5,6 +5,7 @@ go 1.22.5
 require (
 	github.com/JohannesKaufmann/html-to-markdown v1.6.0
 	github.com/PuerkitoBio/goquery v1.9.2
+	github.com/a-h/templ v0.2.778
 	github.com/alecthomas/chroma/v2 v2.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-sqlite3 v1.14.22

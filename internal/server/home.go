@@ -1,19 +1,24 @@
 package server
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/Arey125/article-collector/internal/article"
-    . "github.com/Arey125/article-collector/internal/server/template"
+	"github.com/Arey125/article-collector/internal/server/template"
 )
 
 func (server *Server) Home(w http.ResponseWriter, req *http.Request) {
-	sourceLinks := make([]Link, len(article.Sources))
+	sourceLinks := make([]template.TemplateLink, len(article.Sources))
 
     for i, source := range article.Sources {
-        sourceLinks[i] = getSourceLink(*source)
+        link := getSourceLink(*source)
+        sourceLinks[i] = template.TemplateLink{
+            Title: link.Title,
+            Link: link.Link,
+        }
     }
 
-	templ := NewTemplate("home")
-	templ.ExecuteTemplate(w, "base", sourceLinks)
+    page := template.Home(sourceLinks)
+    page.Render(context.Background(), w)
 }

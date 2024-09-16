@@ -1,6 +1,7 @@
 include .env
 
 all:
+	@templ generate
 	@go build -o bin/article-collector cmd/main.go
 
 run: all
