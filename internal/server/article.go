@@ -10,7 +10,7 @@ import (
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 
 	"github.com/Arey125/article-collector/internal/article"
-	. "github.com/Arey125/article-collector/internal/server/template"
+	"github.com/Arey125/article-collector/internal/server/template"
 )
 
 var mdRenderer = goldmark.New(

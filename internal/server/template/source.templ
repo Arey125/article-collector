@@ -1,0 +1,23 @@
+package template
+
+type SourcePage struct {
+	Title string
+	Nav   []TemplateLink
+	Links []TemplateLink
+}
+
+templ sourceNavigation() {
+}
+
+templ sourceContent(source []SourcePage) {
+    <h1>{source.Title}</h1>
+    <ul class="links">
+        {{ range .Links }}
+        <li><a href="{{ .Link }}">{{ .Title }}</a></li>
+        {{ end }}
+    </ul>
+}
+
+templ Source(source []SourcePage) {
+	@base("source", homeNavigation(), homeContent(sources))
+}
