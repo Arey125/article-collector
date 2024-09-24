@@ -1,17 +1,12 @@
 package server
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/Arey125/article-collector/internal/article"
-	. "github.com/Arey125/article-collector/internal/server/template"
+	"github.com/Arey125/article-collector/internal/server/template"
 )
-
-type SourcePage struct {
-	Title string
-	Nav   []Link
-	Links []Link
-}
 
 func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -36,20 +31,25 @@ func (server *Server) Source(w http.ResponseWriter, req *http.Request) {
 		serverError(w, err)
 	}
 
-	articleLinks := make([]Link, len(articles))
+	articleLinks := make([]template.TemplateLink, len(articles))
 	for i, article := range articles {
-		articleLinks[i] = getArticleLink(article)
+        articleLinks[i] = getArticleTemplateLink(article)
 	}
 
-	sourcePage := SourcePage{
+	sourcePage := template.SourcePage{
 		Title: source.Name,
 		Links: articleLinks,
-		Nav:   getSourceNav(*source),
+		Nav:   getSourceTemplateNav(*source),
 	}
 
+    /*
     templ := NewTemplate("source")
 	err = templ.ExecuteTemplate(w, "base", sourcePage)
 	if err != nil {
 		serverError(w, err)
 	}
+    */
+
+    page := template.Source(sourcePage)
+    page.Render(context.Background(), w)
 }

@@ -9,15 +9,15 @@ type SourcePage struct {
 templ sourceNavigation() {
 }
 
-templ sourceContent(source []SourcePage) {
+templ sourceContent(source SourcePage) {
     <h1>{source.Title}</h1>
     <ul class="links">
-        {{ range .Links }}
-        <li><a href="{{ .Link }}">{{ .Title }}</a></li>
-        {{ end }}
+        for _, link := range source.Links {
+            <li><a href={ templ.SafeURL(link.Link) }>{ link.Title }</a></li>
+        }
     </ul>
 }
 
-templ Source(source []SourcePage) {
-	@base("source", homeNavigation(), homeContent(sources))
+templ Source(source SourcePage) {
+	@base("source", sourceNavigation(), sourceContent(source))
 }
